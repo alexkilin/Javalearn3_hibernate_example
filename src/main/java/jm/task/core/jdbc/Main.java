@@ -27,7 +27,7 @@ public class Main {
 
         userServiceImpl.dropUsersTable();
 
-        userServiceImpl.userDaoHibernate.sessionFactory.close();
+        userServiceImpl.userDao.sessionFactory.close();
 
     }
 

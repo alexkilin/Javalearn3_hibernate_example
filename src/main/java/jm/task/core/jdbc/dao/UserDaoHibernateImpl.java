@@ -13,15 +13,19 @@ public class UserDaoHibernateImpl implements UserDao {
         this.sessionFactory = Util.getSessionFactory();
     }
 
-
     @Override
     public void createUsersTable() {
         Session session = sessionFactory.openSession();
-      //  Transaction transaction = session.beginTransaction();
-        session.createSQLQuery("CREATE TABLE IF NOT EXISTS Users (id BIGINT NOT NULL AUTO_INCREMENT," +
-                " name VARCHAR(40) NOT NULL, lastName VARCHAR(40) NOT NULL," +
-                        " age TINYINT,PRIMARY KEY (id))").executeUpdate();
-     //   transaction.commit();
+        try {
+            Transaction transaction = session.beginTransaction();
+            session.createSQLQuery("CREATE TABLE IF NOT EXISTS Users (id BIGINT NOT NULL AUTO_INCREMENT," +
+                    " name VARCHAR(40) NOT NULL, lastName VARCHAR(40) NOT NULL," +
+                    " age TINYINT,PRIMARY KEY (id))").executeUpdate();
+            transaction.commit();
+        } catch (RuntimeException e) {
+            session.getTransaction().rollback();
+            throw e;
+        }
         session.close();
    }
 
